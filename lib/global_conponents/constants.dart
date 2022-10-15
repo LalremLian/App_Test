@@ -1,0 +1,1 @@
+final String BaseURL = "apitest.hotelsetting.com";

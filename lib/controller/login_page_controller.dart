@@ -59,6 +59,7 @@ class LoginPageController extends GetxController {
     print(respose);
     try {
       if (decodeJson['status'] != 0) {
+        localStorage.write('ISON', true);
         Get.snackbar(
           'Welcome',
           "",

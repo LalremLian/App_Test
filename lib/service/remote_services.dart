@@ -10,20 +10,17 @@ import '../model/test.dart';
 
 class RemoteService{
 
-  // final String _url = "https://owlbot.info/api/v4/dictionary/";
-  final String urls = BaseURL;
-  final String _token = "c99413a763f9861f62fad84a38adf948c9e50b71";
-
+  //-----------------------------------------------------------------------Login
   Future<http.Response> getSearchData(String value, String pass) async {
 
       var response;
-      print('SERVICE : ' + value + '   ' + pass);
+      // print('SERVICE : ' + value + '   ' + pass);
       print(Uri.http(BaseURL, 'api/login').toString());
       return response = await http.post(
           Uri.http(BaseURL, 'api/login'),
           body: {'email': value, 'password': pass});
 
-
+//region Dummy
 /*    List<BlogModel> blogList = [];
 
     var url = Uri.parse(urls + '/login');
@@ -53,8 +50,10 @@ class RemoteService{
       return postFromJson(json);
     }
     return null;*/
+//endregion
   }
 
+  //region Dummy2
   var blogList = <Test>[].obs;
   Future<Test?> getBlogsData(String token) async {
 
@@ -71,11 +70,14 @@ class RemoteService{
     }
     return null;
   }
+  //endregion
 
+
+  //-------------------------------------------------------------------All-Blogs
   Future<http.Response> getDta(String token) async {
     var response;
 
-    print('From Execute Service : ' + Uri.http(BaseURL, 'api/admin/blog-news').toString());
+    print('From Execute Service : ${Uri.http(BaseURL, 'api/admin/blog-news')}');
     return response = await http.get(
       Uri.http(BaseURL, 'api/admin/blog-news'),
       headers: {'Authorization': 'Bearer $token',
@@ -83,4 +85,85 @@ class RemoteService{
       },
     );
   }
+
+
+//--------------------------------------------------------------------CreateBlog
+  Future<http.Response> createBlogPost
+      (String stTitle,
+      String stSubTitle,
+      String stSlug,
+      String stDescription,
+      String stCategoryId,
+      String stDate,
+      String stTags,
+      String token
+      ) async {
+
+    var queryParameters = {
+      'title': stTitle,
+      'sub_title': stSubTitle,
+      'slug': stSlug,
+      'description': stDescription,
+      'category_id': stCategoryId,
+      'date': stDate,
+      'tags': stTags,
+    };
+
+    var response;
+    print('From Execute Service : ${Uri.http(BaseURL, 'api/admin/blog-news/create', queryParameters)}');
+    return response = await http.get(
+      Uri.http(BaseURL, 'api/admin/blog-news/store', queryParameters),
+      headers: {'Authorization': 'Bearer $token',
+        // "Authorization": "Bearer " + token,
+      },
+    );
+  }
+
+
+  //------------------------------------------------------------------UpdateBlog
+  Future<http.Response> updateBlogPost(
+      String stId,
+      String stTitle,
+      String stSubTitle,
+      String stSlug,
+      String stDescription,
+      String stCategoryId,
+      String stDate,
+      String stTags,
+      String token) async {
+
+    var queryParameters = {
+      'title': stTitle,
+      'sub_title': stSubTitle,
+      'slug': stSlug,
+      'description': stDescription,
+      'category_id': stCategoryId,
+      'date': stDate,
+      'tags': stTags,
+    };
+
+
+    var response;
+    // print('SERVICE : ' + value + '   ' + pass);
+    print(Uri.http(BaseURL, 'api/admin/blog-news/update/$stId', queryParameters).toString());
+    return response = await http.post(
+        Uri.http(BaseURL, 'api/admin/blog-news/update/$stId', queryParameters),
+    headers: {'Authorization': 'Bearer $token'});
+  }
+
+
+
+  //------------------------------------------------------------------DeleteBlog
+  Future<http.Response> deleteBlogPost(
+      String stId,
+      String token) async {
+
+    var response;
+    // print('SERVICE : ' + value + '   ' + pass);
+    print(Uri.http(BaseURL, 'api/admin/blog-news/delete/$stId').toString());
+    return response = await http.delete(
+        Uri.http(BaseURL, 'api/admin/blog-news/delete/$stId'),
+        headers: {'Authorization': 'Bearer $token'});
+  }
+
 }

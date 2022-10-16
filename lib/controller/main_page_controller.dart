@@ -15,7 +15,17 @@ class MainPageController extends GetxController {
   final localStorage = GetStorage();
   var blogList = <BlogModel>[].obs;
 
+  bool? isFirstLaunch;
   var isLoaded = false.obs;
+  var currentDate = DateTime.now().obs;
+
+  TextEditingController titleTextController = TextEditingController();
+  TextEditingController subTitleTextController = TextEditingController();
+  TextEditingController slugTextController = TextEditingController();
+  TextEditingController descriptionTextController = TextEditingController();
+  TextEditingController categoryIdTextController = TextEditingController();
+  TextEditingController dateTextController = TextEditingController();
+  TextEditingController tagsTextController = TextEditingController();
 
   String error = 'No Definition found.';
 
@@ -23,6 +33,14 @@ class MainPageController extends GetxController {
   void onInit() {
     super.onInit();
     editingController = TextEditingController();
+
+/*    titleTextController = TextEditingController();
+    subTitleTextController = TextEditingController();
+    slugTextController = TextEditingController();
+    descriptionTextController = TextEditingController();
+    categoryIdTextController = TextEditingController();
+    dateTextController = TextEditingController();
+    tagsTextController = TextEditingController();*/
   }
 
   Future<void> getDefinition() async {
@@ -89,6 +107,8 @@ class MainPageController extends GetxController {
   }
 
   void addAPIDataToBlogList(var apiData) {
+
+    blogList.clear();
     for (var item in apiData) {
       print('ADDING ::: ' + apiData.toString());
       blogList.add(BlogModel(
@@ -102,5 +122,156 @@ class MainPageController extends GetxController {
           date: item['date'].toString()));
     }
   }
+
+  String categoryId = '';
+  String title = '';
+  String subTitle = '';
+  String slug = '';
+  String description = '';
+  String image = '';
+  String date = '';
+  String tags = '';
+
+  //region Create Blog
+  Future<void> createBlog() async{
+
+    String token = localStorage.read('USER_TOKEN');
+    var response = await RemoteService().createBlogPost(title,subTitle,slug,description,categoryId,date,tags,token);
+
+    try {
+      if (response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
+          var decodeJson = json.decode(response.body);
+
+          if (decodeJson['message'].toString() == 'Blog Save Success') {
+            Get.snackbar(
+              'Successfully Added.',
+              '',
+              colorText: Colors.black54,
+              snackPosition: SnackPosition.BOTTOM,
+              duration: const Duration(milliseconds: 1500),
+              forwardAnimationCurve: Curves.easeOutBack,
+            );
+
+            getDefinition2();
+            // siteNameList.add(url);
+
+          } else {
+            Get.snackbar(
+              decodeJson['data'],
+              '',
+              colorText: Colors.redAccent[200],
+              snackPosition: SnackPosition.BOTTOM,
+              duration: Duration(milliseconds: 1900),
+              forwardAnimationCurve: Curves.easeOutBack,
+            );
+          }
+        } else {
+          print("Court Execute : Empty");
+        }
+      } else {
+        print("Court Execute : Failed");
+      }
+    } catch (e) {
+      print('Exception : ' + e.toString());
+    } finally {/*isLoading(false);*/}
+
+  }
+  //endregion
+
+
+  Future<void> updateBlog(String stId) async{
+
+    String token = localStorage.read('USER_TOKEN');
+    var response = await RemoteService().updateBlogPost(stId,title,subTitle,slug,description,categoryId,date,tags,token);
+
+    try {
+      if (response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
+          var decodeJson = json.decode(response.body);
+
+          if (decodeJson['message'].toString() == 'Blog Update Success') {
+            Get.snackbar(
+              'Successfully Updated.',
+              '',
+              colorText: Colors.black54,
+              snackPosition: SnackPosition.BOTTOM,
+              duration: const Duration(milliseconds: 1500),
+              forwardAnimationCurve: Curves.easeOutBack,
+            );
+
+            getDefinition2();
+            // siteNameList.add(url);
+
+          } else {
+            Get.snackbar(
+              decodeJson['data'],
+              '',
+              colorText: Colors.redAccent[200],
+              snackPosition: SnackPosition.BOTTOM,
+              duration: Duration(milliseconds: 1900),
+              forwardAnimationCurve: Curves.easeOutBack,
+            );
+          }
+        } else {
+          print("Court Execute : Empty");
+        }
+      } else {
+        print("Court Execute : Failed");
+      }
+    } catch (e) {
+      print('Exception : ' + e.toString());
+    } finally {/*isLoading(false);*/}
+
+  }
+
+
+  //region Delete Blog
+  Future<void> deleteBlog(String stId) async{
+
+    String token = localStorage.read('USER_TOKEN');
+    var response = await RemoteService().deleteBlogPost(stId,token);
+
+    try {
+      if (response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
+          var decodeJson = json.decode(response.body);
+
+          if (decodeJson['message'].toString() == 'Blog Delete Success') {
+            Get.snackbar(
+              'Successfully Deleted.',
+              '',
+              colorText: Colors.black54,
+              snackPosition: SnackPosition.BOTTOM,
+              duration: const Duration(milliseconds: 1500),
+              forwardAnimationCurve: Curves.easeOutBack,
+            );
+
+            getDefinition2();
+
+            // siteNameList.add(url);
+
+          } else {
+            Get.snackbar(
+              decodeJson['data'],
+              '',
+              colorText: Colors.redAccent[200],
+              snackPosition: SnackPosition.BOTTOM,
+              duration: Duration(milliseconds: 1900),
+              forwardAnimationCurve: Curves.easeOutBack,
+            );
+          }
+        } else {
+          print("Court Execute : Empty");
+        }
+      } else {
+        print("Court Execute : Failed");
+      }
+    } catch (e) {
+      print('Exception : ' + e.toString());
+    } finally {/*isLoading(false);*/}
+
+  }
+//endregion
 
 }

@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 
 import '../binding/login_binding.dart';
 import '../binding/main_page_binding.dart';
+import '../binding/splash_screen_binding.dart';
 import '../views/admin_panel.dart';
 import '../views/login_page.dart';
+import '../views/splash_screen.dart';
 
 appRoutes() => [
   GetPage(
@@ -23,6 +25,14 @@ appRoutes() => [
     transitionDuration: const Duration(milliseconds: 500),
   ),
   GetPage(
+    name: '/splashScreenPage',
+    page: () => SplashScreenPage(),
+    middlewares: [MyMiddelware()],
+    binding: SplashScreenBinding(),
+    transition: Transition.leftToRightWithFade,
+    transitionDuration: const Duration(milliseconds: 500),
+  ),
+  GetPage(
     name: '/loginPage',
     page: () => LoginPage(),
     middlewares: [MyMiddelware()],
@@ -30,6 +40,7 @@ appRoutes() => [
     transition: Transition.leftToRightWithFade,
     transitionDuration: const Duration(milliseconds: 500),
   ),
+
 ];
 
 class MyMiddelware extends GetMiddleware {

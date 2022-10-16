@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'App Test',
-      initialRoute: '/loginPage',
+      initialRoute: '/splashScreenPage',
       getPages: appRoutes(),
     );
   }

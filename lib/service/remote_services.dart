@@ -110,7 +110,8 @@ class RemoteService{
     };
 
     var response;
-    print('From Execute Service : ${Uri.http(BaseURL, 'api/admin/blog-news/create', queryParameters)}');
+    print(queryParameters);
+    print('From Execute Service : ${Uri.http(BaseURL, 'api/admin/blog-news/store', queryParameters)}');
     return response = await http.get(
       Uri.http(BaseURL, 'api/admin/blog-news/store', queryParameters),
       headers: {'Authorization': 'Bearer $token',

@@ -182,6 +182,14 @@ class MainPageController extends GetxController {
 
   Future<void> updateBlog(String stId) async{
 
+    title = titleTextController.text;
+    subTitle = subTitleTextController.text;
+    slug = slugTextController.text;
+    description = descriptionTextController.text;
+    categoryId = categoryIdTextController.text;
+    date = dateTextController.text;
+    tags = tagsTextController.text;
+
     String token = localStorage.read('USER_TOKEN');
     var response = await RemoteService().updateBlogPost(stId,title,subTitle,slug,description,categoryId,date,tags,token);
 

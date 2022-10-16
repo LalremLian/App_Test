@@ -340,33 +340,43 @@ class MainPage extends StatelessWidget {
                   child: Card(
                     elevation: 5.0,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${mainPageController.blogList[index].id}'
-                            '\n${mainPageController.blogList[index].title}'
-                            '\n${mainPageController.blogList[index].subTitle}'
-                            '\n${mainPageController.blogList[index].date}'),
-
-                      IconButton(
-                        iconSize: 20,
-                        icon: const Icon(
-                          Icons.edit,
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text('${mainPageController.blogList[index].id}'
+                              '\n${mainPageController.blogList[index].title}'
+                              '\n${mainPageController.blogList[index].subTitle}'
+                              '\n${mainPageController.blogList[index].date}',
+                          style: const TextStyle(fontSize: 16.0),),
                         ),
-                        onPressed: () {
 
-                        },
-                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            iconSize: 20,
+                            icon: const Icon(
+                              Icons.edit,
+                            ),
+                            onPressed: () {
 
-                        IconButton(
-                          iconSize: 20,
-                          color: Colors.redAccent,
-                          icon: const Icon(
-                            Icons.delete,
+                            },
                           ),
-                          onPressed: () {
-                            mainPageController.deleteBlog(mainPageController.blogList[index].id.toString()
-                            );
-                          },
-                        )
+
+                          IconButton(
+                            iconSize: 20,
+                            color: Colors.redAccent,
+                            icon: const Icon(
+                              Icons.delete,
+                            ),
+                            onPressed: () {
+                              mainPageController.deleteBlog(mainPageController.blogList[index].id.toString()
+                              );
+                            },
+                          )
+                        ],
+                      )
+
 
                       ],
                     )
@@ -417,7 +427,7 @@ class MainPage extends StatelessWidget {
                           filled: true,
                           fillColor: Colors.white,
                           focusColor: Colors.white,
-                          hintText: 'Enter tile',
+                          hintText: 'Enter title',
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                                 color: Colors.black45, width: 0.00),
@@ -443,7 +453,7 @@ class MainPage extends StatelessWidget {
                           filled: true,
                           fillColor: Colors.white,
                           focusColor: Colors.white,
-                          hintText: 'Enter tile',
+                          hintText: 'Enter SubTitle',
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                                 color: Colors.black45, width: 0.00),
@@ -469,7 +479,7 @@ class MainPage extends StatelessWidget {
                           filled: true,
                           fillColor: Colors.white,
                           focusColor: Colors.white,
-                          hintText: 'Enter tile',
+                          hintText: 'Enter Slug',
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                                 color: Colors.black45, width: 0.00),
@@ -495,7 +505,7 @@ class MainPage extends StatelessWidget {
                           filled: true,
                           fillColor: Colors.white,
                           focusColor: Colors.white,
-                          hintText: 'Enter tile',
+                          hintText: 'Enter Description',
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                                 color: Colors.black45, width: 0.00),
@@ -521,7 +531,7 @@ class MainPage extends StatelessWidget {
                           filled: true,
                           fillColor: Colors.white,
                           focusColor: Colors.white,
-                          hintText: 'Enter tile',
+                          hintText: 'Enter Category ID',
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                                 color: Colors.black45, width: 0.00),
@@ -547,7 +557,7 @@ class MainPage extends StatelessWidget {
                           filled: true,
                           fillColor: Colors.white,
                           focusColor: Colors.white,
-                          hintText: 'Enter tile',
+                          hintText: 'Enter Date',
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                                 color: Colors.black45, width: 0.00),
@@ -573,7 +583,7 @@ class MainPage extends StatelessWidget {
                           filled: true,
                           fillColor: Colors.white,
                           focusColor: Colors.white,
-                          hintText: 'Enter tile',
+                          hintText: 'Enter Tags',
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                                 color: Colors.black45, width: 0.00),
@@ -583,29 +593,35 @@ class MainPage extends StatelessWidget {
                       ),
                       //............................................................TextButton
 
-                      TextButton(
-                        child: const Text("Close"),
-                        onPressed: () {
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            child: const Text("Close"),
+                            onPressed: () {
 
-                          var snackBar = const SnackBar(
-                              duration: Duration(milliseconds: 2000),
-                              content:
-                              Text('Thanks for using our App.'));
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(snackBar);
-                          Navigator.of(context).pop();
-                        },
-                      ),
+                              var snackBar = const SnackBar(
+                                  duration: Duration(milliseconds: 2000),
+                                  content:
+                                  Text('Thanks for using our App.'));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                              Navigator.of(context).pop();
+                            },
+                          ),
 
-                      //............................................................TextButton
-                      TextButton(
-                        child: const Text("Proceed"),
-                        onPressed: () {
-                          mainPageController.createBlog();
-                          // webViewPageController.addAnotherLink();
-                          Navigator.of(context).pop();
-                        },
-                      ),
+                          //............................................................TextButton
+                          TextButton(
+                            child: const Text("Proceed"),
+                            onPressed: () {
+                              mainPageController.createBlog();
+                              // webViewPageController.addAnotherLink();
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      )
+
                     ],
                   ));
             },

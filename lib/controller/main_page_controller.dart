@@ -135,6 +135,18 @@ class MainPageController extends GetxController {
   //region Create Blog
   Future<void> createBlog() async{
 
+
+    title = titleTextController.text;
+    subTitle = subTitleTextController.text;
+    slug = slugTextController.text;
+    description = descriptionTextController.text;
+    categoryId = categoryIdTextController.text;
+    // image = image.text;
+    date = dateTextController.text;
+    tags = tagsTextController.text;
+
+    print('create BLOG ::: ' + categoryId);
+
     String token = localStorage.read('USER_TOKEN');
     var response = await RemoteService().createBlogPost(title,subTitle,slug,description,categoryId,date,tags,token);
 

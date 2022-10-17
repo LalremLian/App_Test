@@ -10,6 +10,7 @@ class SplashScreenController extends GetxController {
 
     isFirstLaunch = localStorage.read('ISON');
 
+    // print('SP :: ' + localStorage.read('ISON').toString());
     if(isFirstLaunch == true)
     {
       print('TRUE -- MainPage');

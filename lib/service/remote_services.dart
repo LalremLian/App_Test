@@ -35,19 +35,9 @@ class RemoteService{
       String stCategoryId,
       String stDate,
       String stTags,
+      String stEncodedData,
       String token
       ) async {
-
-    var queryParameters = {
-      'title': stTitle,
-      'sub_title': stSubTitle,
-      'slug': stSlug,
-      'description': stDescription,
-      'category_id': stCategoryId,
-      'date': stDate,
-      // 'date': '',
-      'tags': stTags,
-    };
 
     var map = new Map<String, dynamic>();
     map['title'] = stTitle;
@@ -55,8 +45,10 @@ class RemoteService{
     map['slug'] = stSlug;
     map['description'] = stDescription;
     map['category_id'] = stCategoryId;
+    map['image'] = stEncodedData;
 
     var response;
+    print('service base64 : ' + stEncodedData);
     print('From Execute Service : ${Uri.http(BaseURL, 'api/admin/blog-news/store')}');
     return response = await http.post(
       Uri.http(BaseURL, 'api/admin/blog-news/store',),

@@ -1,11 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+
+import 'dart:io' as Io;
 
 import 'package:app_test/model/blog_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
+
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../service/remote_services.dart';
 
@@ -20,7 +25,8 @@ class MainPageController extends GetxController {
   String date = '';
   String tags = '';
 
-  final localStorage = GetStorage();
+  String encodedData = '';
+
   var blogList = <BlogModel>[].obs;
 
   bool? isFirstLaunch;
@@ -42,8 +48,11 @@ class MainPageController extends GetxController {
     isLoading(true);
     var apiData = [];
 
-    String token = localStorage.read('USER_TOKEN');
-    var response = await RemoteService().getDta(token);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? token = prefs.getString('USER_TOKEN');
+
+    var response = await RemoteService().getDta(token!);
     if (response.statusCode == 200) {
       if (response.body.isNotEmpty) {
         var decodeJson = json.decode(response.body);
@@ -80,11 +89,35 @@ class MainPageController extends GetxController {
           tags: item['tags'].toString()));
     }
   }
+  RxString fileName = ''.obs;
 
+  Future<void> getImage() async {
+    final ImagePicker _picker = ImagePicker();
+
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    List<Object> g = [image!.path];
+
+    File file = File(image.path);
+
+
+    print(file.toString());
+    fileName.value = file.toString();
+    print('RX VALUE : ' + fileName.value);
+
+
+
+    Uint8List imageByte = await image.readAsBytes();
+    String base64 = base64Encode(imageByte);
+
+    encodedData = base64;
+  }
 
 
   //-----------------------------------------------------------------Create Blog
   Future<void> createBlog() async{
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     title = titleTextController.text;
     subTitle = subTitleTextController.text;
@@ -97,8 +130,8 @@ class MainPageController extends GetxController {
 
     print('create BLOG ::: $categoryId');
 
-    String token = localStorage.read('USER_TOKEN');
-    var response = await RemoteService().createBlogPost(title,subTitle,slug,description,categoryId,date,tags,token);
+    String? token = prefs.getString('USER_TOKEN');
+    var response = await RemoteService().createBlogPost(title,subTitle,slug,description,categoryId,date,tags,encodedData,token!);
 
     try {
       if (response.statusCode == 200) {
@@ -152,6 +185,8 @@ class MainPageController extends GetxController {
   Future<void> updateBlog(String stId) async{
     isLoading(true);
 
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     title = titleTextController.text;
     subTitle = subTitleTextController.text;
     slug = slugTextController.text;
@@ -160,8 +195,8 @@ class MainPageController extends GetxController {
     date = dateTextController.text;
     tags = tagsTextController.text;
 
-    String token = localStorage.read('USER_TOKEN');
-    var response = await RemoteService().updateBlogPost(stId,title,subTitle,slug,description,categoryId,date,tags,token);
+    String? token = prefs.getString('USER_TOKEN');
+    var response = await RemoteService().updateBlogPost(stId,title,subTitle,slug,description,categoryId,date,tags,token!);
 
     try {
       if (response.statusCode == 200) {
@@ -212,8 +247,10 @@ class MainPageController extends GetxController {
   //-----------------------------------------------------------------Delete Blog
   Future<void> deleteBlog(String stId) async{
 
-    String token = localStorage.read('USER_TOKEN');
-    var response = await RemoteService().deleteBlogPost(stId,token);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? token = prefs.getString('USER_TOKEN');
+    var response = await RemoteService().deleteBlogPost(stId,token!);
 
     try {
       if (response.statusCode == 200) {
@@ -270,11 +307,16 @@ class MainPageController extends GetxController {
     categoryIdTextController.clear();
     dateTextController.clear();
     tagsTextController.clear();
+
+    fileName.value = 'Choose an Image';
+    encodedData = '';
   }
 
 
   //---------------------------------------------------------------Update Preset
   void updatePreset(int blogId){
+
+    preset();
 
     titleTextController = TextEditingController(text: blogList[blogId].title);
     subTitleTextController = TextEditingController(text: blogList[blogId].subTitle);

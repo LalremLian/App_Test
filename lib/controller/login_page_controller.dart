@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:convert' as convert;
 
-import 'package:get_storage/get_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../service/remote_services.dart';
 
 
@@ -15,7 +15,6 @@ class LoginPageController extends GetxController {
   var email = '';
   var password = '';
 
-  final localStorage = GetStorage();
 
   @override
   void onInit() {
@@ -37,19 +36,21 @@ class LoginPageController extends GetxController {
     test(email, password);
   }
 
+
+
+
   Future<void> test(String e, String p) async {
     isLoading(true);
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     var respose = await RemoteService().getLoginData(e, p);
 
     var decodeJson = convert.jsonDecode(respose.body);
 
-    print(decodeJson);
-    print(respose);
     try {
       if (decodeJson['status'] != 0) {
-        localStorage.write('ISON', true);
-        print(localStorage.read('ISON').toString());
+        prefs.setBool('isLoggedIn', true);
         Get.snackbar(
           'Welcome',
           "",
@@ -58,8 +59,7 @@ class LoginPageController extends GetxController {
           forwardAnimationCurve: Curves.easeOutBack,
         );
 
-        localStorage.write('USER_TOKEN', decodeJson['data']['token'].toString());
-        print(localStorage.read('USER_TOKEN') + '    *********');
+        prefs.setString('USER_TOKEN', decodeJson['data']['token'].toString());
 
         Get.offAllNamed('/mainPage');
       } else {

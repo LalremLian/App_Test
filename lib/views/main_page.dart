@@ -273,6 +273,7 @@ class CustomDialogBox extends StatelessWidget {
               ),
             ),
             TextFormField(
+              // enabled: false,
               controller: mainPageController
                   .tagsTextController,
               onSaved: (value) {
@@ -298,6 +299,32 @@ class CustomDialogBox extends StatelessWidget {
               ),
             ),
 
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Obx(
+                  () =>               Row(
+                    children: [
+
+                      IconButton(
+                        iconSize: 20,
+                        icon: const Icon(
+                          Icons.download_outlined,
+                        ),
+                        onPressed: () {
+                          mainPageController.getImage();
+                        },
+                      ),
+
+                      SizedBox(
+                        width: 140.0,
+                        child: Text(mainPageController.fileName.value,
+                            style: TextStyle(),overflow: TextOverflow.ellipsis),
+                      ),
+                    ],),
+              )
+
+
+            ),
 
             //............................................................TextButton
             Row(
@@ -306,6 +333,7 @@ class CustomDialogBox extends StatelessWidget {
                 TextButton(
                   child: const Text("Close"),
                   onPressed: () {
+                    mainPageController.preset();
                     Navigator.of(context).pop();
                   },
                 ),

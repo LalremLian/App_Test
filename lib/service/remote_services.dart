@@ -106,14 +106,41 @@ class RemoteService{
       'description': stDescription,
       'category_id': stCategoryId,
       'date': stDate,
+      // 'date': '',
       'tags': stTags,
     };
 
+    var map = new Map<String, dynamic>();
+    map['title'] = stTitle;
+    map['sub_title'] = stSubTitle;
+    map['slug'] = stSlug;
+    map['description'] = stDescription;
+    map['category_id'] = stCategoryId;
+
+    print(jsonEncode(<String, String>{
+    'title': stTitle,
+    'sub_title': stSubTitle,
+    'slug': stSlug,
+    'description': stDescription,
+    'category_id': stCategoryId}));
+    // final json = '{"title": "Hello", "body": "body text", "userId": 1}';
+    final json = queryParameters;
+
+    Map<String, dynamic> body = {'id': 21, 'name': 'bob'};
     var response;
     print(queryParameters);
-    print('From Execute Service : ${Uri.http(BaseURL, 'api/admin/blog-news/store', queryParameters)}');
-    return response = await http.get(
-      Uri.http(BaseURL, 'api/admin/blog-news/store', queryParameters),
+    print('From Execute Service : ${Uri.http(BaseURL, 'api/admin/blog-news/store')}');
+    return response = await http.post(
+      Uri.http(BaseURL, 'api/admin/blog-news/store',),
+/*      body: jsonEncode(<String, String>{
+        'title': stTitle,
+        'sub_title': stSubTitle,
+        'slug': stSlug,
+        'description': stDescription,
+        'category_id': stCategoryId
+      }   */
+
+      body: map,
       headers: {'Authorization': 'Bearer $token',
         // "Authorization": "Bearer " + token,
       },

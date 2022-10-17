@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 class BlogModel {
   BlogModel({
@@ -10,6 +9,7 @@ class BlogModel {
     required this.description,
     required this.image,
     required this.date,
+    required this.tags,
   });
 
   String id;
@@ -20,5 +20,6 @@ class BlogModel {
   String description;
   String image;
   String date;
+  String tags;
 
 }

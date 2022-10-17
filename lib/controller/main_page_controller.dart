@@ -2,20 +2,29 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:app_test/model/blog_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-import '../model/test.dart';
 import '../service/remote_services.dart';
 
 class MainPageController extends GetxController {
-  late TextEditingController editingController;
+
+  String categoryId = '';
+  String title = '';
+  String subTitle = '';
+  String slug = '';
+  String description = '';
+  String image = '';
+  String date = '';
+  String tags = '';
 
   final localStorage = GetStorage();
   var blogList = <BlogModel>[].obs;
 
   bool? isFirstLaunch;
+  var isLoading = false.obs;
   var isLoaded = false.obs;
   var currentDate = DateTime.now().obs;
 
@@ -27,58 +36,10 @@ class MainPageController extends GetxController {
   TextEditingController dateTextController = TextEditingController();
   TextEditingController tagsTextController = TextEditingController();
 
-  String error = 'No Definition found.';
 
-  @override
-  void onInit() {
-    super.onInit();
-    editingController = TextEditingController();
-
-/*    titleTextController = TextEditingController();
-    subTitleTextController = TextEditingController();
-    slugTextController = TextEditingController();
-    descriptionTextController = TextEditingController();
-    categoryIdTextController = TextEditingController();
-    dateTextController = TextEditingController();
-    tagsTextController = TextEditingController();*/
-  }
-
-  Future<void> getDefinition() async {
-    isLoaded(true);
-
-/*    if (value.isEmpty) {
-      await Future.delayed(const Duration(seconds: 1));
-      Get.snackbar("Enter something", "",
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(milliseconds: 2000),
-          forwardAnimationCurve: Curves.easeOutBack);
-      isLoaded(false);
-      return;
-    }*/
-
-    String token = localStorage.read('USER_TOKEN');
-
-    var response = await RemoteService().getBlogsData(token);
-
-    if (response != null) {
-      blogList.value = response.data.blogs.data.cast<BlogModel>();
-      isLoaded(false);
-    } else {
-      Get.snackbar("Definition not found.", "",
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(milliseconds: 2000),
-          forwardAnimationCurve: Curves.easeOutBack);
-
-      isLoaded(false);
-      // definitionList.clear();
-    }
-
-/*    print("Controller -----------");
-    print(definitonList);*/
-  }
-
-
-  Future<void> getDefinition2() async {
+  //--------------------------------------------------------------Get Blogs List
+  Future<void> getBlogsList() async {
+    isLoading(true);
     var apiData = [];
 
     String token = localStorage.read('USER_TOKEN');
@@ -86,31 +47,27 @@ class MainPageController extends GetxController {
     if (response.statusCode == 200) {
       if (response.body.isNotEmpty) {
         var decodeJson = json.decode(response.body);
-        // apiData = decodeJson['data']['appeal'];
+
         apiData.addAll(decodeJson['data']['blogs']['data']);
-        print("From main Page :: " + apiData.toString());
-        if (apiData.length <= 0) String a;
-          // hasNextPage(false);
-/*          if (apiData.length <= 0)
-            noDataFoundFromSearch.value = true;
-          else
-            noDataFoundFromSearch.value = false;*/
+
         addAPIDataToBlogList(apiData);
-        // isLoading(false);
-        //print(decodeJson['data']['appeal']);
+        isLoading(false);
+
       } else {
-        // hasNextPage(false);
-        print("Court Execute : Empty");
+        if (kDebugMode) {
+          print("Blog List : Empty");
+        }
       }
-    } else
-      print("Court Execute : Failed");
+    } else {
+      if (kDebugMode) {
+        print("Blog List : Failed");
+      }
+    }
   }
 
   void addAPIDataToBlogList(var apiData) {
-
     blogList.clear();
     for (var item in apiData) {
-      print('ADDING ::: ' + apiData.toString());
       blogList.add(BlogModel(
           id: item['id'].toString(),
           categoryId: item['category_id'].toString(),
@@ -119,22 +76,15 @@ class MainPageController extends GetxController {
           slug: item['slug'].toString(),
           description: item['description'].toString(),
           image: (item['image'].toString() == '')?'':item['id'].toString(),
-          date: item['date'].toString()));
+          date: item['date'].toString(),
+          tags: item['tags'].toString()));
     }
   }
 
-  String categoryId = '';
-  String title = '';
-  String subTitle = '';
-  String slug = '';
-  String description = '';
-  String image = '';
-  String date = '';
-  String tags = '';
 
-  //region Create Blog
+
+  //-----------------------------------------------------------------Create Blog
   Future<void> createBlog() async{
-
 
     title = titleTextController.text;
     subTitle = subTitleTextController.text;
@@ -145,7 +95,7 @@ class MainPageController extends GetxController {
     date = dateTextController.text;
     tags = tagsTextController.text;
 
-    print('create BLOG ::: ' + categoryId);
+    print('create BLOG ::: $categoryId');
 
     String token = localStorage.read('USER_TOKEN');
     var response = await RemoteService().createBlogPost(title,subTitle,slug,description,categoryId,date,tags,token);
@@ -165,8 +115,9 @@ class MainPageController extends GetxController {
               forwardAnimationCurve: Curves.easeOutBack,
             );
 
-            getDefinition2();
-            // siteNameList.add(url);
+
+            getBlogsList();
+            preset();
 
           } else {
             Get.snackbar(
@@ -174,25 +125,32 @@ class MainPageController extends GetxController {
               '',
               colorText: Colors.redAccent[200],
               snackPosition: SnackPosition.BOTTOM,
-              duration: Duration(milliseconds: 1900),
+              duration: const Duration(milliseconds: 1900),
               forwardAnimationCurve: Curves.easeOutBack,
             );
           }
         } else {
-          print("Court Execute : Empty");
+          if (kDebugMode) {
+            print("Create Blog : Empty");
+          }
         }
       } else {
-        print("Court Execute : Failed");
+        if (kDebugMode) {
+          print("Create Blog : Failed");
+        }
       }
     } catch (e) {
-      print('Exception : ' + e.toString());
-    } finally {/*isLoading(false);*/}
+      if (kDebugMode) {
+        print('Exception : $e');
+      }
+    } finally {isLoading(false);}
 
   }
-  //endregion
 
 
+  //-----------------------------------------------------------------Update Blog
   Future<void> updateBlog(String stId) async{
+    isLoading(true);
 
     title = titleTextController.text;
     subTitle = subTitleTextController.text;
@@ -220,8 +178,7 @@ class MainPageController extends GetxController {
               forwardAnimationCurve: Curves.easeOutBack,
             );
 
-            getDefinition2();
-            // siteNameList.add(url);
+            getBlogsList();
 
           } else {
             Get.snackbar(
@@ -229,24 +186,30 @@ class MainPageController extends GetxController {
               '',
               colorText: Colors.redAccent[200],
               snackPosition: SnackPosition.BOTTOM,
-              duration: Duration(milliseconds: 1900),
+              duration: const Duration(milliseconds: 1900),
               forwardAnimationCurve: Curves.easeOutBack,
             );
           }
         } else {
-          print("Court Execute : Empty");
+          if (kDebugMode) {
+            print("Update Blog : Empty");
+          }
         }
       } else {
-        print("Court Execute : Failed");
+        if (kDebugMode) {
+          print("Update Blog : Failed");
+        }
       }
     } catch (e) {
-      print('Exception : ' + e.toString());
-    } finally {/*isLoading(false);*/}
+      if (kDebugMode) {
+        print('Exception : $e');
+      }
+    } finally {isLoading(false);}
 
   }
 
 
-  //region Delete Blog
+  //-----------------------------------------------------------------Delete Blog
   Future<void> deleteBlog(String stId) async{
 
     String token = localStorage.read('USER_TOKEN');
@@ -267,9 +230,7 @@ class MainPageController extends GetxController {
               forwardAnimationCurve: Curves.easeOutBack,
             );
 
-            getDefinition2();
-
-            // siteNameList.add(url);
+            getBlogsList();
 
           } else {
             Get.snackbar(
@@ -277,21 +238,52 @@ class MainPageController extends GetxController {
               '',
               colorText: Colors.redAccent[200],
               snackPosition: SnackPosition.BOTTOM,
-              duration: Duration(milliseconds: 1900),
+              duration: const Duration(milliseconds: 1900),
               forwardAnimationCurve: Curves.easeOutBack,
             );
           }
         } else {
-          print("Court Execute : Empty");
+          if (kDebugMode) {
+            print("Delete Blog : Empty");
+          }
         }
       } else {
-        print("Court Execute : Failed");
+        if (kDebugMode) {
+          print("Delete Blog : Failed");
+        }
       }
     } catch (e) {
-      print('Exception : ' + e.toString());
-    } finally {/*isLoading(false);*/}
+      if (kDebugMode) {
+        print('Exception : $e');
+      }
+    } finally {isLoading(false);}
 
   }
-//endregion
+
+
+  //------------------------------------------------------------------------Preset
+  void preset(){
+    titleTextController.clear();
+    subTitleTextController.clear();
+    slugTextController.clear();
+    descriptionTextController.clear();
+    categoryIdTextController.clear();
+    dateTextController.clear();
+    tagsTextController.clear();
+  }
+
+
+  //---------------------------------------------------------------Update Preset
+  void updatePreset(int blogId){
+
+    titleTextController = TextEditingController(text: blogList[blogId].title);
+    subTitleTextController = TextEditingController(text: blogList[blogId].subTitle);
+    slugTextController = TextEditingController(text: blogList[blogId].slug);
+    descriptionTextController = TextEditingController(text: blogList[blogId].description);
+    categoryIdTextController = TextEditingController(text: blogList[blogId].categoryId);
+    dateTextController = TextEditingController(text: blogList[blogId].date);
+    tagsTextController = TextEditingController(text: blogList[blogId].tags);
+  }
+
 
 }

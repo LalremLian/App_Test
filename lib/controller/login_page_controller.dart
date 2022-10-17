@@ -1,22 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:get_storage/get_storage.dart';
 import 'dart:convert' as convert;
 
 import 'package:get_storage/get_storage.dart';
-
 import '../service/remote_services.dart';
-
-// import 'package:e_court/general_certificate_court/services/login_page_api_service/login_page_api_service.dart';
-
-// import 'package:e_court/general_certificate_court/pages/signup_page/view/signup_page.dart';
-
-// import 'package:e_court/general_certificate_court/pages/dashboard_tab/dashboard_tab.dart';
-
-// import '../../cdap_login_page/view/cdap_login_page.dart';
-
 
 
 class LoginPageController extends GetxController {
@@ -51,7 +38,9 @@ class LoginPageController extends GetxController {
   }
 
   Future<void> test(String e, String p) async {
-    var respose = await RemoteService().getSearchData(e, p);
+    isLoading(true);
+
+    var respose = await RemoteService().getLoginData(e, p);
 
     var decodeJson = convert.jsonDecode(respose.body);
 
@@ -73,7 +62,6 @@ class LoginPageController extends GetxController {
         print(localStorage.read('USER_TOKEN') + '    *********');
 
         Get.offAllNamed('/mainPage');
-        // Get.to(() => DashboardTab());
       } else {
         Get.snackbar(
           decodeJson['data'],

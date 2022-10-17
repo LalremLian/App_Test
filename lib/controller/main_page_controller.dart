@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'dart:io' as Io;
-
 import 'package:app_test/model/blog_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +102,6 @@ class MainPageController extends GetxController {
     print(file.toString());
     fileName.value = file.toString();
     print('RX VALUE : ' + fileName.value);
-
 
 
     Uint8List imageByte = await image.readAsBytes();

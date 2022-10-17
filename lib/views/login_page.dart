@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controller/login_page_controller.dart';
+import 'package:app_test/controller/login_page_controller.dart';
 
 class LoginPage extends GetView<LoginPageController>{
   final loginPageController = Get.put(LoginPageController());

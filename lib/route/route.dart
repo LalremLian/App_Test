@@ -1,9 +1,10 @@
 import 'package:app_test/views/main_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
-import '../binding/login_binding.dart';
-import '../binding/main_page_binding.dart';
-import '../views/login_page.dart';
+import 'package:app_test/binding/login_binding.dart';
+import 'package:app_test/binding/main_page_binding.dart';
+import 'package:app_test/views/login_page.dart';
 
 appRoutes() => [
   GetPage(
@@ -28,7 +29,9 @@ appRoutes() => [
 class MyMiddelware extends GetMiddleware {
   @override
   GetPage? onPageCalled(GetPage? page) {
-    print(page?.name);
+    if (kDebugMode) {
+      print(page?.name);
+    }
     return super.onPageCalled(page);
   }
 }

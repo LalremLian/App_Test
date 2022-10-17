@@ -19,10 +19,10 @@ class LoginPageController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // emailController = TextEditingController();
-    // passwordController = TextEditingController();
-    emailController = TextEditingController(text: "admin@gmail.com");
-    passwordController = TextEditingController(text: "12345678");
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    // emailController = TextEditingController(text: "admin@gmail.com");
+    // passwordController = TextEditingController(text: "12345678");
 
   }
 
@@ -44,9 +44,9 @@ class LoginPageController extends GetxController {
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    var respose = await RemoteService().getLoginData(e, p);
+    var response = await RemoteService().getLoginData(e, p);
 
-    var decodeJson = convert.jsonDecode(respose.body);
+    var decodeJson = convert.jsonDecode(response.body);
 
     try {
       if (decodeJson['status'] != 0) {

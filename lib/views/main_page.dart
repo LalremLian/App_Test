@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controller/main_page_controller.dart';
+import 'package:app_test/controller/main_page_controller.dart';
 
 class MainPage extends StatelessWidget {
   MainPage({Key? key}) : super(key: key);
@@ -13,10 +13,9 @@ class MainPage extends StatelessWidget {
     mainPageController.getBlogsList();
     return Scaffold(
         appBar: AppBar(
-          title: const Text('App'),
+          title: const Text('App Test'),
         ),
-        body: Obx(
-              () {
+        body: Obx( () {
                 if(mainPageController.isLoading.value) {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -71,8 +70,6 @@ class MainPage extends StatelessWidget {
                                       )
                                     ],
                                   )
-
-
                                 ],
                               )
                           ),
@@ -81,7 +78,6 @@ class MainPage extends StatelessWidget {
                 }
               }
         ),
-
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.green,
@@ -93,8 +89,6 @@ class MainPage extends StatelessWidget {
             },
             child: const Icon(Icons.add)
         )
-
-
     );
   }
 }
@@ -301,10 +295,8 @@ class CustomDialogBox extends StatelessWidget {
 
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Obx(
-                  () =>               Row(
+              child: Obx( () => Row(
                     children: [
-
                       IconButton(
                         iconSize: 20,
                         icon: const Icon(
@@ -322,8 +314,6 @@ class CustomDialogBox extends StatelessWidget {
                       ),
                     ],),
               )
-
-
             ),
 
             //............................................................TextButton
